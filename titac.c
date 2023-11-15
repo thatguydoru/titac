@@ -34,8 +34,8 @@ typedef enum {
 void draw_grid(const CellState grid[]);
 size_t index_from_mouse(void);
 size_t random_index(void);
-void player_one_handler(CellState grid[]);
-void player_two_ai_handler(CellState grid[]);
+int player_one_handler(CellState grid[]);
+int player_two_ai_handler(CellState grid[]);
 int is_grid_filled(const CellState grid[]);
 GameState game_status(const CellState grid[]);
 
@@ -68,16 +68,15 @@ int main(void) {
             case GameStateContinue:
                 switch (turn) {
                     case PlayerTurn1:
-                        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)
-                            && grid[index_from_mouse()] == GridStateEmpty) {
-                            player_one_handler(grid);
+                        if (player_one_handler(grid)) {
                             turn = PlayerTurn2;
                         }
                         break;
 
                     case PlayerTurn2:
-                        player_two_ai_handler(grid);
-                        turn = PlayerTurn1;
+                        if (player_two_ai_handler(grid)) {
+                            turn = PlayerTurn1;
+                        }
                         break;
                 }
                 game_state = game_status(grid);
@@ -201,7 +200,7 @@ int is_grid_filled(const CellState grid[]) {
     return 1;
 }
 
-void player_two_ai_handler(CellState grid[]) {
+int player_two_ai_handler(CellState grid[]) {
     int placed = 0;
     while (!placed && !is_grid_filled(grid)) {
         size_t idx = random_index();
@@ -210,13 +209,19 @@ void player_two_ai_handler(CellState grid[]) {
             placed = 1;
         }
     }
+
+    return 1;
 }
 
-void player_one_handler(CellState grid[]) {
+int player_one_handler(CellState grid[]) {
     size_t idx = index_from_mouse();
-    if (grid[idx] == GridStateEmpty) {
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)
+        && grid[idx] == GridStateEmpty) {
         grid[idx] = GridStatePlayer1;
+        return 1;
     }
+
+    return 0;
 }
 
 size_t random_index(void) {
