@@ -240,9 +240,9 @@ void draw_grid(const CellState grid[]) {
     int padding_top = 28 * GetScreenWidth() / GetScreenHeight();
     int padding_right = 38 * GetScreenWidth() / GetScreenHeight();
 
-    for (size_t i = 0; i < 2; i++) {
-        int dist_row = CELL_WIDTH * (i + 1);
-        int dist_col = CELL_HEIGHT * (i + 1);
+    for (size_t i = 1; i < GRID_SIDE; i++) {
+        int dist_row = CELL_WIDTH * i;
+        int dist_col = CELL_HEIGHT * i;
         DrawLine(0, dist_row, GetScreenWidth(), dist_row, BLACK);
         DrawLine(dist_col, 0, dist_col, GetScreenHeight(), BLACK);
     }
