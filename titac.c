@@ -9,6 +9,8 @@
 #define GRID_SIDE 3
 #define P1_WIN 3
 #define P2_WIN -3
+#define CELL_WIDTH (GetScreenWidth() / 3)
+#define CELL_HEIGHT (GetScreenHeight() / 3)
 
 typedef enum {
     GridStateEmpty = 0,
@@ -108,7 +110,13 @@ int main(void) {
                     },
                     end_color
                 );
-                DrawText("P1 wins!\nPress SPACE to restart.", 0, 0, 16, BLACK);
+                DrawText(
+                    "P1 wins!\nSPACE: restart\nESC: quit",
+                    0,
+                    0,
+                    16,
+                    BLACK
+                );
                 break;
 
             case GameStateWinP2:
@@ -120,7 +128,13 @@ int main(void) {
                     },
                     end_color
                 );
-                DrawText("P2 wins!\nPress SPACE to restart.", 0, 0, 16, BLACK);
+                DrawText(
+                    "P2 wins!\nSPACE: restart\nESC: quit",
+                    0,
+                    0,
+                    16,
+                    BLACK
+                );
                 break;
 
             case GameStateDraw:
@@ -132,7 +146,13 @@ int main(void) {
                     },
                     end_color
                 );
-                DrawText("Draw!\nPress SPACE to restart.", 0, 0, 16, BLACK);
+                DrawText(
+                    "Draw!\nSPACE: restart\nESC: quit",
+                    0,
+                    0,
+                    16,
+                    BLACK
+                );
                 break;
 
             default:
@@ -207,32 +227,28 @@ size_t random_index(void) {
 }
 
 size_t index_from_mouse(void) {
-    int width_dist = GetScreenWidth() / 3;
-    int height_dist = GetScreenHeight() / 3;
     Vector2 mouse_pos = GetMousePosition();
-    size_t x = (size_t)mouse_pos.x / width_dist;
-    size_t y = (size_t)mouse_pos.y / height_dist;
+    size_t x = (size_t)mouse_pos.x / CELL_WIDTH;
+    size_t y = (size_t)mouse_pos.y / CELL_HEIGHT;
 
     return y * GRID_SIDE + x;
 }
 
 void draw_grid(const CellState grid[]) {
-    int width_dist = GetScreenWidth() / 3;
-    int height_dist = GetScreenHeight() / 3;
     int padding_top = 28 * GetScreenWidth() / GetScreenHeight();
     int padding_right = 38 * GetScreenWidth() / GetScreenHeight();
 
     for (size_t i = 0; i < 2; i++) {
-        int dist_row = width_dist * (i + 1);
-        int dist_col = height_dist * (i + 1);
+        int dist_row = CELL_WIDTH * (i + 1);
+        int dist_col = CELL_HEIGHT * (i + 1);
         DrawLine(0, dist_row, GetScreenWidth(), dist_row, BLACK);
         DrawLine(dist_col, 0, dist_col, GetScreenHeight(), BLACK);
     }
 
     for (size_t x = 0; x < GRID_SIDE; x++) {
         for (size_t y = 0; y < GRID_SIDE; y++) {
-            int dist_row = x * width_dist + padding_right;
-            int dist_col = y * height_dist + padding_top;
+            int dist_row = x * CELL_WIDTH + padding_right;
+            int dist_col = y * CELL_HEIGHT + padding_top;
 
             switch (grid[y * GRID_SIDE + x]) {
                 case GridStateEmpty:
