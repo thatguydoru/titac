@@ -209,10 +209,6 @@ void draw_win_line(const CellState grid[]) {
 }
 
 GameState game_status(const CellState grid[]) {
-    if (is_grid_filled(grid)) {
-        return GameStateDraw;
-    }
-
     int sums[8] = { 0 };
     for (size_t i = 0; i < GRID_SIDE; i++) {
         // Horizontal checksum
@@ -231,6 +227,10 @@ GameState game_status(const CellState grid[]) {
             case P2_WIN:
                 return GameStateWinP2;
         }
+    }
+
+    if (is_grid_filled(grid)) {
+        return GameStateDraw;
     }
 
     return GameStateContinue;
