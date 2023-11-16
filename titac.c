@@ -304,14 +304,13 @@ void draw_grid(const CellState grid[]) {
             int dist_col = y * CELL_HEIGHT + padding_top;
 
             switch (grid[y * GRID_SIDE + x]) {
-                case GridStateEmpty:
-                    DrawText("-", dist_row, dist_col, 96, GRAY);
-                    break;
                 case GridStatePlayer1:
                     DrawText("O", dist_row, dist_col, 96, GRAY);
                     break;
                 case GridStatePlayer2:
                     DrawText("X", dist_row, dist_col, 96, GRAY);
+                    break;
+                case GridStateEmpty:
                     break;
             }
         }
