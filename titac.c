@@ -256,7 +256,7 @@ int player_two_ai_handler(CellState grid[]) {
         }
     }
 
-    thrd_sleep(&(struct timespec) { .tv_sec = 1 }, NULL);
+    thrd_sleep(&(struct timespec) { .tv_nsec = 80000000 }, NULL);
 
     return 1;
 }
