@@ -1,5 +1,7 @@
 #include <stddef.h>
 #include <stdio.h>
+#include <threads.h>
+#include <time.h>
 
 #include "raylib.h"
 
@@ -54,9 +56,7 @@ int main(void) {
                 break;
 
             case KEY_SPACE:
-                if (game_state != GameStart) {
-                    game_state = GameStart;
-                }
+                game_state = GameStart;
                 break;
 
             default:
@@ -255,6 +255,8 @@ int player_two_ai_handler(CellState grid[]) {
             placed = 1;
         }
     }
+
+    thrd_sleep(&(struct timespec) { .tv_sec = 1 }, NULL);
 
     return 1;
 }
