@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <stdio.h>
 
 #include "raylib.h"
 
@@ -6,8 +7,8 @@
 #define GRID_SIDE 3
 #define P1_WIN 3
 #define P2_WIN -3
-#define CELL_WIDTH (GetScreenWidth() / 3)
-#define CELL_HEIGHT (GetScreenHeight() / 3)
+#define CELL_WIDTH (GetScreenWidth() / (float)GRID_SIDE)
+#define CELL_HEIGHT (GetScreenHeight() / (float)GRID_SIDE)
 
 typedef enum {
     GridStateEmpty = 0,
@@ -35,6 +36,7 @@ int player_one_handler(CellState grid[]);
 int player_two_ai_handler(CellState grid[]);
 int is_grid_filled(const CellState grid[]);
 GameState game_status(const CellState grid[]);
+void draw_win_line(const CellState grid[]);
 
 int main(void) {
     InitWindow(400, 400, "titac");
@@ -98,6 +100,7 @@ int main(void) {
 
         switch (game_state) {
             case GameStateWinP1:
+                draw_win_line(grid);
                 DrawRectangleV(
                     (Vector2) { 0 },
                     (Vector2) {
@@ -116,6 +119,7 @@ int main(void) {
                 break;
 
             case GameStateWinP2:
+                draw_win_line(grid);
                 DrawRectangleV(
                     (Vector2) { 0 },
                     (Vector2) {
@@ -157,6 +161,51 @@ int main(void) {
 
         EndDrawing();
     }
+}
+
+void draw_win_line(const CellState grid[]) {
+    Vector2 start = { 0 };
+    Vector2 end = { 0 };
+
+    for (size_t i = 0; i < GRID_SIDE; i++) {
+        if (grid[i * 3] != GridStateEmpty
+            && grid[i * 3] == grid[i * 3 + 1]
+            && grid[i * 3] == grid[i * 3 + 2]) {
+            start.x = 0;
+            start.y = (i * 2 + 1) * CELL_HEIGHT / 2;
+            end.x = GetScreenWidth();
+            end.y = (i * 2 + 1) * CELL_HEIGHT / 2;
+            break;
+        }
+
+        if (grid[i] != GridStateEmpty
+            &&grid[i] == grid[i + 3]
+            && grid[i] == grid[i + 6]) {
+            start.x = (i * 2 + 1) *  CELL_WIDTH / 2.;
+            start.y = 0;
+            end.x = (i * 2 + 1) * CELL_WIDTH / 2;
+            end.y = GetScreenHeight();
+            break;
+        }
+    }
+
+    if (grid[0] != GridStateEmpty
+        && grid[0] == grid[4]
+        && grid[0] == grid[8]) {
+        start.x = 0;
+        start.y = 0;
+        end.x = GetScreenWidth();
+        end.y = GetScreenHeight();
+    } else if (grid[2] != GridStateEmpty
+        && grid[2] == grid[4]
+        && grid[2] == grid[6]) {
+        start.x = GetScreenWidth();
+        start.y = 0;
+        end.x = 0;
+        end.y = GetScreenHeight();
+    }
+
+    DrawLineEx(start, end, 20, RED);
 }
 
 GameState game_status(const CellState grid[]) {
