@@ -161,6 +161,8 @@ int main(void) {
 
         EndDrawing();
     }
+
+    return 0;
 }
 
 void draw_win_line(const CellState grid[]) {
