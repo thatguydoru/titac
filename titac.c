@@ -34,8 +34,8 @@ typedef enum {
 void draw_grid(const CellState grid[]);
 size_t index_from_mouse(void);
 size_t random_index(void);
-int player_one_handler(CellState grid[]);
-int player_two_ai_handler(CellState grid[]);
+PlayerTurn player_one_handler(CellState grid[]);
+PlayerTurn player_two_ai_handler(CellState grid[]);
 int is_grid_filled(const CellState grid[]);
 GameState game_status(const CellState grid[]);
 void draw_win_line(const CellState grid[]);
@@ -67,15 +67,11 @@ int main(void) {
             case GameStateContinue:
                 switch (turn) {
                     case PlayerTurn1:
-                        if (player_one_handler(grid)) {
-                            turn = PlayerTurn2;
-                        }
+                        turn = player_one_handler(grid);
                         break;
 
                     case PlayerTurn2:
-                        if (player_two_ai_handler(grid)) {
-                            turn = PlayerTurn1;
-                        }
+                        turn = player_two_ai_handler(grid);
                         break;
                 }
                 game_state = game_status(grid);
@@ -248,30 +244,29 @@ int is_grid_filled(const CellState grid[]) {
     return 1;
 }
 
-int player_two_ai_handler(CellState grid[]) {
-    int placed = 0;
-    while (!placed && !is_grid_filled(grid)) {
+PlayerTurn player_two_ai_handler(CellState grid[]) {
+    while (!is_grid_filled(grid)) {
         size_t idx = random_index();
         if (grid[idx] == GridStateEmpty) {
             grid[idx] = GridStatePlayer2;
-            placed = 1;
+            break;
         }
     }
 
     thrd_sleep(&(struct timespec) { .tv_nsec = 80000000 }, NULL);
 
-    return 1;
+    return PlayerTurn1;
 }
 
-int player_one_handler(CellState grid[]) {
+PlayerTurn player_one_handler(CellState grid[]) {
     size_t idx = index_from_mouse();
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)
         && grid[idx] == GridStateEmpty) {
         grid[idx] = GridStatePlayer1;
-        return 1;
+        return PlayerTurn2;
     }
 
-    return 0;
+    return PlayerTurn1;
 }
 
 size_t random_index(void) {
@@ -309,9 +304,11 @@ void draw_grid(const CellState grid[]) {
                 case GridStatePlayer1:
                     DrawText("O", dist_row, dist_col, 96, GRAY);
                     break;
+
                 case GridStatePlayer2:
                     DrawText("X", dist_row, dist_col, 96, GRAY);
                     break;
+
                 case GridStateEmpty:
                     break;
             }
