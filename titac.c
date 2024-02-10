@@ -45,7 +45,7 @@ int main(void) {
 
     const Color end_color = ColorAlpha(GRAY, 0.5);
 
-    CellState grid[GRID_SIZE] = { GridStateEmpty };
+    CellState grid[GRID_SIZE] = {GridStateEmpty};
     GameState game_state = GameStateContinue;
     PlayerTurn turn = PlayerTurn1;
 
@@ -98,11 +98,8 @@ int main(void) {
             case GameStateWinP1:
                 draw_win_line(grid);
                 DrawRectangleV(
-                    (Vector2) { 0 },
-                    (Vector2) {
-                        GetScreenWidth(),
-                        GetScreenHeight()
-                    },
+                    (Vector2) {0},
+                    (Vector2) {GetScreenWidth(), GetScreenHeight()},
                     end_color
                 );
                 DrawText(
@@ -117,7 +114,7 @@ int main(void) {
             case GameStateWinP2:
                 draw_win_line(grid);
                 DrawRectangleV(
-                    (Vector2) { 0 },
+                    (Vector2) {0},
                     (Vector2) {
                         GetScreenWidth(),
                         GetScreenHeight(),
@@ -135,20 +132,14 @@ int main(void) {
 
             case GameStateDraw:
                 DrawRectangleV(
-                    (Vector2) { 0 },
+                    (Vector2) {0},
                     (Vector2) {
                         GetScreenWidth(),
                         GetScreenHeight(),
                     },
                     end_color
                 );
-                DrawText(
-                    "Draw!\nSPACE: restart\nESC: quit",
-                    0,
-                    0,
-                    16,
-                    BLACK
-                );
+                DrawText("Draw!\nSPACE: restart\nESC: quit", 0, 0, 16, BLACK);
                 break;
 
             default:
@@ -162,12 +153,11 @@ int main(void) {
 }
 
 void draw_win_line(const CellState grid[]) {
-    Vector2 start = { 0 };
-    Vector2 end = { 0 };
+    Vector2 start = {0};
+    Vector2 end = {0};
 
     for (size_t i = 0; i < GRID_SIDE; i++) {
-        if (grid[i * 3] != GridStateEmpty
-            && grid[i * 3] == grid[i * 3 + 1]
+        if (grid[i * 3] != GridStateEmpty && grid[i * 3] == grid[i * 3 + 1]
             && grid[i * 3] == grid[i * 3 + 2]) {
             start.x = 0;
             start.y = (i * 2 + 1) * CELL_HEIGHT / 2;
@@ -176,10 +166,9 @@ void draw_win_line(const CellState grid[]) {
             break;
         }
 
-        if (grid[i] != GridStateEmpty
-            &&grid[i] == grid[i + 3]
+        if (grid[i] != GridStateEmpty && grid[i] == grid[i + 3]
             && grid[i] == grid[i + 6]) {
-            start.x = (i * 2 + 1) *  CELL_WIDTH / 2.;
+            start.x = (i * 2 + 1) * CELL_WIDTH / 2.;
             start.y = 0;
             end.x = (i * 2 + 1) * CELL_WIDTH / 2;
             end.y = GetScreenHeight();
@@ -187,16 +176,12 @@ void draw_win_line(const CellState grid[]) {
         }
     }
 
-    if (grid[0] != GridStateEmpty
-        && grid[0] == grid[4]
-        && grid[0] == grid[8]) {
+    if (grid[0] != GridStateEmpty && grid[0] == grid[4] && grid[0] == grid[8]) {
         start.x = 0;
         start.y = 0;
         end.x = GetScreenWidth();
         end.y = GetScreenHeight();
-    } else if (grid[2] != GridStateEmpty
-        && grid[2] == grid[4]
-        && grid[2] == grid[6]) {
+    } else if (grid[2] != GridStateEmpty && grid[2] == grid[4] && grid[2] == grid[6]) {
         start.x = GetScreenWidth();
         start.y = 0;
         end.x = 0;
@@ -207,7 +192,7 @@ void draw_win_line(const CellState grid[]) {
 }
 
 GameState game_status(const CellState grid[]) {
-    int sums[8] = { 0 };
+    int sums[8] = {0};
     for (size_t i = 0; i < GRID_SIDE; i++) {
         // Horizontal checksum
         sums[i] = grid[i * 3] + grid[i * 3 + 1] + grid[i * 3 + 2];
@@ -253,7 +238,7 @@ PlayerTurn player_two_ai_handler(CellState grid[]) {
         }
     }
 
-    thrd_sleep(&(struct timespec) { .tv_nsec = 80000000 }, NULL);
+    thrd_sleep(&(struct timespec) {.tv_nsec = 80000000}, NULL);
 
     return PlayerTurn1;
 }
